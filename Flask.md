@@ -8,7 +8,7 @@
 `sudo pip install Flask`
 #### 就完成 Flask 的安裝拉～
 
-
+---
 ## Hello World
 
 ### 先寫一個檔 hello.py
@@ -93,3 +93,40 @@ def show_post_ip(password):
 if __name__ == "__main__":
     app.run()
 ```
+---
+## 使用樣板 template
+
+### 在 Hello.py 的目錄下建一個資料夾名稱一定要是 template
+`mkdir template`
+### 寫一個 HTML 檔在資料夾底下（在這裡用 test.html）
+```html
+<!doctype html>
+<title>Hello from Flask</title>
+{% if template_name %}
+  <h1>Hello {{ template_name }}!</h1>
+{% else %}
+  <h1>Hello, World!</h1>
+{% endif %}
+```
+
+### 新建一個檔輸入以下程式碼
+```py
+from flask import Flask
+from flask import render_template
+app = Flask(__name__)
+
+@app.route('/hello/')
+@app.route('/hello/<name>')
+def hello_use_template(name=None):
+    # 第一個參數是在 templates 資料夾下你要使用的 樣版 檔案
+    # 第二個參數是你要傳給 樣版 解析代入的資料
+    # 第二個參數前面的 template_name 是樣板中的變數
+    # 第二個參數後面的 name 是這個 hello_use_template 函數中的變數
+    return render_template('test.html', template_name=name)
+if __name__ == "__main__":
+    app.run()
+```
+### 在瀏覽器開啟網頁
+http://127.0.0.1:5000/elaine
+#### template 會把 name 帶給 template_name ,所以 template_name -> name -> elaine
+#### 因為 name 有東西,所以在 HTML 裡面 if 成立的,所以會出現 Hello elaine !
