@@ -130,3 +130,58 @@ if __name__ == "__main__":
 http://127.0.0.1:5000/elaine
 #### template 會把 name 帶給 template_name ,所以 template_name -> name -> elaine
 #### 因為 name 有東西,所以在 HTML 裡面 if 成立的,所以會出現 Hello elaine !
+
+---
+
+## 使用 Markup 選擇輸出是 HTML 標籤還是 文字
+### 新建一個檔輸入以下程式碼
+#### 記得 'from flask import Markup'
+```py
+from flask import Flask
+from flask import render_template
+from flask import Markup
+app = Flask(__name__)
+
+@app.route('/html/br')
+def br():
+    return Markup('<h1>一級 %s 標籤.</h1>') % '</br>'
+
+@app.route('/html/h1')
+def h1():
+    return Markup.escape('<h1> 一級標籤. </h1>')
+
+@app.route('/html/none_tag')
+def none_tag():
+    return Markup('<p> HTML 標籤會被移除</p> &raquo 但是特殊符號不會').striptags()
+
+if __name__ == "__main__":
+    app.run()
+```
+### 在瀏覽器開啟網頁  
+
+http://127.0.0.1:5000/html/br  
+```
+在原始碼中
+在 Markup 函式中 <h1></h1> 不變
+但是放入的 <br> 會變成 &lt;/br&gt;
+所以字會放大成一級標籤,而 <br> 標籤還是顯示 <br>
+```
+
+
+http://127.0.0.1:5000/html/h1
+```
+在原始碼中
+< 這個符號變成 &lt;
+> 這個符號變成 &gt;
+所以字不會放大, <h1> 標籤還是顯示 <h1>
+```
+`<h1> 一級標籤. </h1>`
+
+http://127.0.0.1:5000/html/none_tag
+```
+在原始碼中
+只要是 HTML 的標籤皆會被刪除
+但是特殊符號可以
+所以字不會顯示 <p> 但是可以顯示 &raquo 的特殊符號
+```
+`HTML 標籤會被移除 » 但是特殊符號不會`
